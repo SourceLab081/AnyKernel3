@@ -5,6 +5,8 @@
 # global properties
 properties() { '
 kernel.string=
+kernel.compiler=AOSP clang
+kernel.made=@teleg3_7
 do.devicecheck=1
 do.modules=0
 do.systemless=1

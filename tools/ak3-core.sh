@@ -856,7 +856,14 @@ setup_ak() {
   cd $AKHOME;
   rm -f modules/system/lib/modules/placeholder patch/placeholder ramdisk/placeholder;
   rmdir -p modules patch ramdisk 2>/dev/null;
-
+  
+  # add for copy kernel modules
+  ui_print " " "Copy kernel modules to /vendor/lib/modules/ ...";
+  setenforce 0;
+  mount -o remount,rw /dev/block/bootdevice/by-name/vendor /vendor;
+  cp -af modules/system/lib/modules/* /vendor/lib/modules/;
+  ui_print " " ;
+  
   # automate simple multi-partition setup for hdr_v4 boot + init_boot + vendor_kernel_boot (for dtb only until magiskboot supports hdr v4 vendor_ramdisk unpack/repack)
   if [ -e "/dev/block/bootdevice/by-name/init_boot$SLOT" -a ! -f init_v4_setup ] && [ -f dtb -o -d vendor_ramdisk -o -d vendor_patch ]; then
     echo "Setting up for simple automatic init_boot flashing..." >&2;

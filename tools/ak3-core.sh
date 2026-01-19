@@ -857,12 +857,17 @@ setup_ak() {
   rm -f modules/system/lib/modules/placeholder patch/placeholder ramdisk/placeholder;
   rmdir -p modules patch ramdisk 2>/dev/null;
   
-  # add for copy kernel modules
-  ui_print " " "Copy kernel modules to /vendor/lib/modules/ ...";
-  setenforce 0;
-  mount -o remount,rw /dev/block/bootdevice/by-name/vendor /vendor;
-  cp -af modules/system/lib/modules/* /vendor/lib/modules/;
-  ui_print " " ;
+  #  copy kernel modules to  /vendor/lib/modules
+  if [ -d modules ]; then
+     ui_print " " "Copy kernel modules to /vendor/lib/modules/ ...";
+     setenforce 0;
+     mount -o remount,rw /dev/block/bootdevice/by-name/vendor /vendor;
+     if [ ! -d /vendor/lib/modules ]; then
+         mkdir -p /vendor/lib/modules
+     fi
+     cp -af modules/system/lib/modules/* /vendor/lib/modules/;
+     ui_print " " ;
+  fi
   
   # automate simple multi-partition setup for hdr_v4 boot + init_boot + vendor_kernel_boot (for dtb only until magiskboot supports hdr v4 vendor_ramdisk unpack/repack)
   if [ -e "/dev/block/bootdevice/by-name/init_boot$SLOT" -a ! -f init_v4_setup ] && [ -f dtb -o -d vendor_ramdisk -o -d vendor_patch ]; then
